@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Resultados da Busca{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Vagas sugeridas</h1>
+    <h2>Resultados para: {{ pesquisa }}</h2>
+    <p>Total de vagas encontradas: {{ total_vagas }}</p>
+
+    {% if vagas %}
+        <ul class="vagas-list">
+        {% for vaga in vagas %}
+            <li class="vaga-item">
+                <a href="{{ vaga.link }}" target="_blank">{{ vaga.title }}</a><br>
+                <strong>Empresa:</strong> {{ vaga.company }}<br>
+                <strong>Localização:</strong>
+                {% if vaga.location %}
+                    {{ vaga.location }}<br>
+                {% else %}
+                    Localização não disponível<br>
+                {% endif %}
+                {% if vaga.updated %}
+                    <strong>Data de publicação:</strong> {{ vaga.updated }}<br>
+                {% else %}
+                    <strong>Data de publicação:</strong> Data não disponível<br>
+                {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+
+        <div class="pagination">
+            {% if pagina > 1 %}
+                <a href="{{ url_for('resultado', pesquisa=pesquisa, pagina=pagina - 1) }}">Página Anterior</a>
+            {% endif %}
+            {% if pagina < total_paginas %}
+                <a href="{{ url_for('resultado', pesquisa=pesquisa, pagina=pagina + 1) }}">Próxima Página</a>
+            {% endif %}
+        </div>
+
+    {% else %}
+        <p>Nenhuma vaga encontrada.</p>
+    {% endif %}
+
+    <a href="{{ url_for('home') }}" class="voltar-btn">Voltar</a>
+</div>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='result.css') }}">
+{% endblock %}

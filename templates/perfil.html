@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Perfil do Usuário{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Informe seu Perfil</h1>
+
+    {% if ultima_busca %}
+    <div class="ultima-busca-container">
+        <p>Última busca: "{{ ultima_busca }}"</p>
+        <form method="POST" action="/ultima-busca" style="display: inline;">
+            <button type="submit">Buscar pela Última Busca</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <form method="POST" action="/perfil">
+        <h2>Habilidades:</h2>
+        <div id="habilidades-container">
+            <div class="habilidade-input">
+                <input type="text" id="habilidade-input" placeholder="Digite sua habilidade">
+                <button type="button" onclick="adicionarHabilidade()">Adicionar</button>
+            </div>
+            <!-- Campo oculto para armazenar habilidades -->
+            <input type="hidden" name="habilidades" id="habilidades-hidden">
+        </div>
+
+        <button type="submit">Salvar Perfil</button>
+    </form>
+</div>
+
+<script>
+    function adicionarHabilidade() {
+        const input = document.getElementById('habilidade-input');
+        const habilidade = input.value.trim();
+        const habilidadesHidden = document.getElementById('habilidades-hidden');
+
+        if (habilidade) {
+            const container = document.getElementById('habilidades-container');
+
+            // Cria um novo elemento para a habilidade
+            const habilidadeItem = document.createElement('div');
+            habilidadeItem.className = 'habilidade-item';
+            habilidadeItem.textContent = habilidade;
+
+            // Cria um botão de excluir
+            const deleteButton = document.createElement('button');
+            deleteButton.type = 'button';
+            deleteButton.textContent = 'Excluir';
+            deleteButton.className = 'delete-button';
+            deleteButton.onclick = function() {
+                container.removeChild(habilidadeItem);
+                atualizarHabilidadesOcultas();
+            };
+
+            habilidadeItem.appendChild(deleteButton);
+            container.appendChild(habilidadeItem);
+
+            habilidadesHidden.value += (habilidadesHidden.value ? ', ' : '') + habilidade;
+
+            input.value = '';
+            input.focus();
+        } else {
+            alert("Por favor, insira uma habilidade.");
+        }
+    }
+
+    function atualizarHabilidadesOcultas() {
+        const habilidadesHidden = document.getElementById('habilidades-hidden');
+        const habilidadeItems = document.querySelectorAll('.habilidade-item');
+
+        const habilidadesArray = Array.from(habilidadeItems).map(item => item.textContent.trim().slice(0, -8));
+        habilidadesHidden.value = habilidadesArray.join(', ');
+    }
+</script>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='perfil.css') }}">
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalhes da Vaga{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ vaga.title }}</h1>
+    <strong>Empresa:</strong> {{ vaga.company }}<br>
+    <strong>Localização:</strong> {{ vaga.location if vaga.location else "Localização não disponível" }}<br>
+    <strong>Data de publicação:</strong> {{ vaga.updated if vaga.updated else "Data não disponível" }}<br>
+    <strong>Descrição:</strong> <br>
+    <p>{{ vaga.description if vaga.description else "Descrição não disponível." }}</p>
+
+    <a href="{{ url_for('resultado', pesquisa=current_user.habilidades) }}" class="voltar-btn">Voltar</a>
+</div>
+<link rel="stylesheet" href="{{ url_for('static', filename='result.css') }}">
+{% endblock %}
